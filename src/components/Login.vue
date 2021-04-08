@@ -9,17 +9,16 @@
                     <input type="text" class="form-control" placeholder="AUTH2_TOKEN" />
                     <label class="control-label">AUTH2_TOKEN</label>
                 </div> -->
-                <a href=""  id="authorized" @click="setBotName()">LOGIN TWITCH</a>
-                <!-- <label for="">
-                    <input type="checkbox" id="checkbox" v-model="checked"> BOT USERNAME &nbsp; 
-                    <div class="toolTip">?
+                <div class="toolTip">?
                         <i class="toolTipText">{{message}}</i>
-                    </div>
-                </label>
-                <div class="textInput" v-if="checked">
-                    <input type="text" class="form-control" placeholder="NAME_BOT" v-model="botName"/>
-                    <label class="control-label">NAME_BOT</label>
-                </div> -->
+                </div>
+                <div class="textInput">
+                    <input type="text" class="form-control" placeholder="outh2_token" v-model="outh2_token"/>
+                    <label class="control-label">outh2_token</label>
+                    
+                </div>
+                
+                <a href=""  id="authorized" @click="setBotName()">LOGIN TWITCH</a>
             </form>
         </div>
     </div>
@@ -33,9 +32,8 @@ export default {
     name: "Login",
     setup() {
 
-        // const botName = ref('');
-        const checked = ref(false);
-        const message = ref("If you have an additional account twitch to use to be the BOT then check the checkbox and write the twitch username.");
+        const outh2_token = ref('');
+        const message = ref(`Give the outhtoken from the website: https://twitchapps.com/tmi/.`);
 
 
         function setBotName() {
@@ -43,32 +41,34 @@ export default {
             const redirect = `http://localhost:8080`;
             const scope = Config.scope;
             const tokenBtn = document.querySelector("#authorized");
+            localStorage.setItem("outh2_token", outh2_token.value)
             tokenBtn.setAttribute("href", `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect.replace('#/', '')}&response_type=token&scope=${scope}`)
         }
 
 
+
         onMounted(()=>{
-            if (document.location.hash && document.location.hash != '') {
+                if (document.location.hash && document.location.hash != '') {
                 const parsedHash = new URLSearchParams(window.location.hash.replace("#/", ""));
                 if(parsedHash.get('access_token')){
                     const access_token = parsedHash.get('access_token');
                     localStorage.setItem("access_token", access_token)
+
                 }
-            }else if(document.location.search && document.location.searcha !== ''){
-                const parsedHash = new URLSearchParams(window.location.hash.replace("#/", ""));
-                const parsedParams = new URLSearchParams(window.location.search);
-                if(parsedHash.get('erros_description')){
-                    const accessToken ={};
-                    accessToken.textContent = parsedParams.get('error') + '-' + parsedParams.get('erros_description');
+                }else if(document.location.search && document.location.searcha !== ''){
+                    const parsedHash = new URLSearchParams(window.location.hash.replace("#/", ""));
+                    const parsedParams = new URLSearchParams(window.location.search);
+                    if(parsedHash.get('erros_description')){
+                        const accessToken ={};
+                        accessToken.textContent = parsedParams.get('error') + '-' + parsedParams.get('erros_description');
+                    }
                 }
-            }
         });
 
 
         return{
-            // botName,
+            outh2_token,
             setBotName,
-            checked,
             message
         }
     }
@@ -111,6 +111,9 @@ export default {
                     height: 20px;
                 }
 
+            }
+
+            
                 .toolTip{
                     position: relative;
                     display: flex;
@@ -156,7 +159,6 @@ export default {
                         }
                     }
                 }
-            }
 
             .textInput{
                 margin: 20px auto;

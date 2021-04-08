@@ -74,6 +74,7 @@ export default {
             const token = localStorage.getItem("access_token");
               if(token){
                   localStorage.removeItem("access_token");
+                  localStorage.removeItem("outh2_token");
                   localStorage.removeItem("data");
                   localStorage.removeItem("chat");
                   window.location.href = '/';

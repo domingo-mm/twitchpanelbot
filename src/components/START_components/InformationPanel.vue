@@ -134,7 +134,7 @@ export default {
                       connection: { reconnect: true },
                       identity: {
                         username: data.botName,
-                        password: config.outh2_token
+                        password: localStorage.getItem("outh2_token")
                       },
                       channels: [ data.userName ]
                     });
