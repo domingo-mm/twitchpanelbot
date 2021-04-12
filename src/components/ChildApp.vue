@@ -7,13 +7,13 @@
             </svg> <br />
             START
             </router-link>
-        <router-link to="/command" class="btn-command">
+        <router-link to="/command" class="btn-command" >
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/terminal-solid.svg#fa-terminal"></use>  
             </svg> <br />
             COMMANDS
         </router-link>
-        <router-link to="/timer" class="btn-timer">
+        <router-link to="/timer" class="btn-timer" >
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/clock-solid.svg#fa-clock"></use>  
             </svg> <br />
@@ -25,13 +25,13 @@
             </svg> <br />
             MODULES
         </router-link>
-        <router-link to="/fun" class="btn-fun">
+        <router-link to="/fun" class="btn-fun" >
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/star-solid.svg#fa-star"></use>  
             </svg> <br />
             FUN
         </router-link>
-        <router-link to="/trigger" class="btn-trigger">
+        <router-link to="/trigger" class="btn-trigger" >
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/cat-solid.svg#fa-cat"></use>  
             </svg> <br />
@@ -69,23 +69,17 @@ export default {
 
 
         onMounted(()=>{
+
           const btnLogOut = document.querySelector(".btn-logout");
           btnLogOut.addEventListener("click", ()=>{
             const token = localStorage.getItem("access_token");
               if(token){
                   localStorage.removeItem("access_token");
-                  localStorage.removeItem("outh2_token");
                   localStorage.removeItem("data");
                   localStorage.removeItem("chat");
                   window.location.href = '/';
               }
           });
-
-
-          // Chat functions
-
-
-
         });
 
       return{
@@ -109,8 +103,8 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 53px;
-  width: 65px;
-  height: 100%;
+  width: 100px;
+  height: 100vh;
   position: static;
   z-index: 2;
   background: #414141;
@@ -125,7 +119,7 @@ export default {
       font-weight: bold;
       color: white;
       text-decoration: none;
-      font-size: 9px;
+      font-size: 10px;
       padding-top: 5px;
       padding-bottom: 5px;
       transition: all ease-in-out .2s;
@@ -135,7 +129,7 @@ export default {
 
   .btn-start, .btn-command, .btn-timer, .btn-module, .btn-fun, .btn-trigger{
     &:hover, &.router-link-exact-active{
-      box-shadow: 0 4px 0 0px #00000094;
+      font-size: 15px;
     }
   }
 
@@ -177,6 +171,9 @@ export default {
 
   .btn-logout{
     background-color: #b10000;
+    &:hover, &.router-link-exact-active{
+      font-size: 15px;
+    }
   }
 }
 </style>

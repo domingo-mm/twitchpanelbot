@@ -1,6 +1,7 @@
 <template>
   <div class="panel-information">
     <div class="panel-top">
+      <h1>CHANNEL INFORMATION</h1>
       <div>
         <h3>TWITCH_USERNAME</h3>
         <h4>{{userName}}</h4>
@@ -10,36 +11,78 @@
         <h4 v-if="checkBotName">{{botName}}</h4>
         <h4 v-else>{{userName}}</h4>
       </div>
+      <div>
+        <h3>Follows</h3>
+        <h4>{{follows}}</h4>
+      </div>
+      <div>
+        <h3>Subscriptions</h3>
+        <h4>{{subscriptions}}</h4>
+      </div>
     </div>
     <div class="panel-center">
-      <div class="content-l">
-        <h1>Information:</h1>
-        <div><h4>Follows</h4> <h3>[{{follows}}]</h3></div>
-        <div><h4> Subscriptions</h4><h3>[{{subscriptions}}]</h3></div>
-      </div>
-      <div class="content-r">
-        <h1>CHAT</h1>
-        <div class="chat" v-for="chat in dataChat" :key="chat">
-          <div class="username">{{chat.username}}: </div>
-          <div class="message">{{chat.message}}</div>
+        <h1><div>CHAT</div></h1>
+        <div class="content-r">
+          <transition-group name="fade">
+            <div class="chat" v-for="chat in dataChat" :key="chat">
+              <article>
+                <header>
+                  <div class="username">
+                    <img :src="chat.profile_image_url" alt="">
+                    <span>{{chat.username}}</span>
+                  </div>
+                </header>
+                <p class="message">{{chat.message}}</p>
+              </article>
+            </div>
+          </transition-group>
         </div>
+      <div class="panel-bottom">
+        <span>
+          <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/terminal-solid.svg#fa-terminal"></use>  
+          </svg><br>
+          COMMANDS [{{commands}}]
+        </span> 
+        <span>
+          <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/clock-solid.svg#fa-clock"></use>  
+          </svg> <br />
+          TIMMERS [{{timmers}}]
+        </span> 
+        <span>
+          <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/modx-brands.svg#fa-modx"></use>  
+          </svg> <br />
+          MODULES [{{modules}}]
+        </span> 
+        <span>
+          <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/star-solid.svg#fa-star"></use>  
+          </svg> <br />
+          FUNS [{{funs}}]
+        </span> 
+        <span>
+          <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/cat-solid.svg#fa-cat"></use>  
+          </svg> <br />
+          TRIGGERS [{{triggers}}]
+        </span>
       </div>
-     
-    </div>
-    <div class="panel-bottom">
-      <span>COMMANDS [{{commands}}]</span> <span>TIMMERS [{{timmers}}]</span> <span>MODULES [{{modules}}]</span> <span>FUNS [{{funs}}]</span> <span>TRIGGERS [{{triggers}}]</span>
     </div>
   </div>
 </template>
 
 <script>
-import tmi from "tmi.js";
-import {onMounted, ref} from "vue";
-import config from "../../store/json/config.json";
+import { useStore} from "vuex";
+import {onMounted, ref, computed} from "vue";
+import config from "../../store/json/config";
+
 
 export default {
   name: "InformationPanel",
   setup(){
+      
     // Variables
       // Strings
         const botName = ref('');
@@ -48,6 +91,7 @@ export default {
         const checkBotName = ref(false);
       // Objects
         const data = {};
+        const store = useStore()
       // Numbers
         const commands = ref(0);
         const timmers = ref(0);
@@ -57,13 +101,28 @@ export default {
         const follows = ref(0);
         const subscriptions = ref(0);
       // Arrays
-        const dataChat = ref([]);
+        let dataChat = computed(()=>{
+          return store.state.chat;
+        });
+
 
 
     onMounted(()=>{
+      const localData = localStorage.getItem('data');
+      if(localData == null){
+        data.id = '';
+        data.userName = '';
+        data.botName = '';
+      } else{
+        data.id = JSON.parse(localData).id;
+        data.userName = JSON.parse(localData).userName;
+        data.botName = JSON.parse(localData).botName;
+      }
+
+      
 
       if((localStorage.getItem("commands") && localStorage.getItem("timmers") && localStorage.getItem("modules") && localStorage.getItem("funs") && localStorage.getItem("triggers")) === null){
-        console.log("NUll")
+        console.log()
       }else{
         commands.value = (localStorage.getItem("commands").length && localStorage.getItem("commands") !== null) || 0;
         timmers.value = (localStorage.getItem("timmers").length && localStorage.getItem("timmers") !== null) | 0;
@@ -72,9 +131,8 @@ export default {
         triggers.value = (localStorage.getItem("triggers").length && localStorage.getItem("triggers") !== null)  || 0;
       }
 
-
         const token = localStorage.getItem("access_token");
-
+        
 
         const GetTwitchData = async (resource)=>{
           const response = await fetch(
@@ -82,7 +140,7 @@ export default {
             {
               "headers": {
                 "Client-ID": config.client_id,
-                "Authorization": "Bearer " + token
+                "Authorization": `Bearer ${token}`
               }
             }
           );
@@ -91,83 +149,41 @@ export default {
           return data;
         };
 
+          GetTwitchData('https://api.twitch.tv/helix/users')
+            .then(function (resp){
+                const {id, display_name} = resp.data[0];
 
-        GetTwitchData('https://api.twitch.tv/helix/users')
-          .then(resp=> {
-            const {id, display_name} = resp.data[0];
-
-
-            data.id = id;
-            data.userName = display_name;
-            data.botName = display_name;
-            localStorage.setItem("data", JSON.stringify(data));
+                botName.value = display_name;
+                userName.value = display_name;
 
 
-            // SetVariables
-              botName.value = data.botName;
-              userName.value = data.userName;
+              // Follows
+                GetTwitchData(`https://api.twitch.tv/helix/users/follows?to_id=${id}`)
+                .then(resp =>{
+                  const {total} = resp;
+                  follows.value = total;
+                }).catch(err=>{
+                  console.log(err);
+                });
 
 
-            // Follows
-              GetTwitchData(`https://api.twitch.tv/helix/users/follows?to_id=${data.id}`)
-              .then(resp =>{
-                const {total} = resp;
-                follows.value = total;
-              }).catch(err=>{
-                console.log(err);
-              });
+              // Subscriptions
+                GetTwitchData(`https://api.twitch.tv/helix/subscriptions?broadcaster_id=${id}`)
+                .then(resp =>{
+                  const {data} = resp;
+                  subscriptions.value = data.length - 1;
+                }).catch(err=>{
+                  console.log(err);
+                });
 
 
-            // Subscriptions
-              GetTwitchData(`https://api.twitch.tv/helix/subscriptions?broadcaster_id=${data.id}`)
-              .then(resp =>{
-                const {data} = resp;
-                subscriptions.value = data.length - 1;
-              }).catch(err=>{
-                console.log(err);
-              });
-
-
-            // chat
-              const client = new tmi.Client({
-                      options: { debug: true },
-                      connection: { reconnect: true },
-                      identity: {
-                        username: data.botName,
-                        password: localStorage.getItem("outh2_token")
-                      },
-                      channels: [ data.userName ]
-                    });
-
-              client.connect();
-
-
-            // get txt and username from chat
-            client.on('message', (channel, tags, message, self) => {
-              if (self) return;
-
-              if(message.toLowerCase() === '!hello'){
-                client.say(channel, "Hello World :D");
-              }
-
-              let chatObj = [];
-              let chat = localStorage.getItem('chat');
-              if(chat == null){
-                chatObj = [];
-              } else{
-                chatObj = JSON.parse(chat);
-              }
-              chatObj.unshift({username: tags.username, message});
-              localStorage.setItem("chat",JSON.stringify(chatObj));
-              dataChat.value = chatObj;
+            }).catch(err=>{
+              console.log(err);
             });
-
-          }).catch(err=>{
-            console.log(err);
-          });
-          // Chat
           
     });
+
+
 
   return{
     // Strings
@@ -194,23 +210,28 @@ export default {
 <style scoped lang="scss">
   .panel-information{
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
     width: 90%;
-    height: 90%;
+    height: 85vh;
     border-radius: 20px;
-    background-color: #c94322;
+    background-color: #997577;
   }
+
+  svg {
+      width: 30px;
+      height: 30px;
+    }
 
 
   .panel-top{
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
     position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
     right: 0;
-    padding: 0;
-
+    padding: 0; 
+    background-color: #08141e;
 
     div{
       padding: 0;
@@ -218,109 +239,118 @@ export default {
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      background-color: #000000bb;
-      width: 100%;
-
+      border: 1px solid white;
+      margin-top: 20px;
+      width: 40%;
 
       h3{
         border-radius: 5px;
         padding: 10px;
         background-color: white;
-        width: 100%;
+        width:240px;
       }
 
       h4{
         color: white;
+        font-size: 17px;
       }
 
     }
-
   }
 
 
   .panel-center{
+    width: 100%;
     display: flex;
-    justify-content: space-evenly;
-
-    .content-l{
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      background-color: #2e011da4;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      color: white;
-      z-index: 0;
-
-
-       h3{
-         margin: 0;
-       }
-
-       h4{
-         margin: .5rem;
-       }
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 0;
+    
+    h1{
+      margin: 0;
+      padding: 0;
     }
 
     .content-r{
-      position:relative; 
       display: flex;
+      border-radius: 30px;
       flex-direction: column;
       align-items: center;
-      width: 750px;
-      height: 500px;
+      width: 70%;
+      height: 70%;
       background-color: white;
-      overflow-y: scroll;
+      overflow: auto;
+
 
       &::-webkit-scrollbar {
-        width: 10px;
+        display: none;
       }
         
-      /* Track */
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-      }
-        
-      /* Handle */
-      &::-webkit-scrollbar-thumb {
-        background: #e9c46a; 
-      }
-
       .chat{
         display: flex;
+        justify-content: space-evenly;
         width: 80%;
-        flex-direction: column;
-        background-color: #8b1601;
+        height: 20vh;
+        background-color: #08141e;
         font-weight: bold;
         color: white;
-        padding: 20px;
-        margin-top: 10px;
-        .username{
-          margin-bottom: 10px;
-          font-size: 25px;
-        }
+        border-radius: 10px;
+        margin-top: 20px;
+        transition: all ease-in-out .2s;
 
-        .message{
-          white-space: normal;
+        article{
+          min-height: 0;
+          width: 100%;
+          transition: all ease-in-out .2s;
+          header{
+            img{
+              height: 50px;
+              width: 50px;
+              border-radius: 50%;
+            }
+            padding: 0;
+            margin: 0;
+            .username{
+              display: flex;
+              align-items: center;
+              padding-left: 20px;
+              margin-top: 10px;
+              margin-bottom: 10px;
+              font-size: 20px;
+
+              span{
+                margin-left: 10px;
+              }
+            }
+          }
+
+          .message{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000b2;
+            height: 13vh;
+            white-space: normal;
+          }
         }
       }
     }
 
+    .panel-bottom{
+        width: 100%;
+        color: white;
+        display: flex;
+        justify-content: space-evenly;
+
+        span{
+          align-items: center;
+          font-weight: bold;
+          text-shadow: 1px 1px #2e011da4;
+        }
+      }
   }
 
 
-  .panel-bottom{
-    width: 100%;
-    color: white;
-    display: flex;
-    justify-content: space-evenly;
-
-    span{
-      font-weight: bold;
-      text-shadow: 1px 1px #2e011da4;
-    }
-  }
+  
 </style>

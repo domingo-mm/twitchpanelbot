@@ -10,8 +10,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #E88268;
+    background-color: #4e495f;
     width: 100%;
+    height: 100vh;
   }
 </style>
 

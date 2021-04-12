@@ -15,10 +15,9 @@
                 <div class="textInput">
                     <input type="text" class="form-control" placeholder="outh2_token" v-model="outh2_token"/>
                     <label class="control-label">outh2_token</label>
-                    
                 </div>
                 
-                <a href=""  id="authorized" @click="setBotName()">LOGIN TWITCH</a>
+                <a href=""  id="authorized" >LOGIN TWITCH</a>
             </form>
         </div>
     </div>
@@ -26,34 +25,53 @@
 
 <script>
 import {onMounted, ref} from "vue";
-import Config from "../store/json/config.json"
+import Config from "../store/json/config.json";
 
 export default {
     name: "Login",
     setup() {
 
         const outh2_token = ref('');
-        const message = ref(`Give the outhtoken from the website: https://twitchapps.com/tmi/.`);
-
-
-        function setBotName() {
-            const client_id = Config.client_id;
-            const redirect = `http://localhost:8080`;
-            const scope = Config.scope;
-            const tokenBtn = document.querySelector("#authorized");
-            localStorage.setItem("outh2_token", outh2_token.value)
-            tokenBtn.setAttribute("href", `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect.replace('#/', '')}&response_type=token&scope=${scope}`)
-        }
-
-
+        const message = ref(`Give the outhtoken from the website: https://twitchapps.com/tmi/`);
+        const data = {};
 
         onMounted(()=>{
-                if (document.location.hash && document.location.hash != '') {
+            const tokenBtn = document.querySelector("#authorized");
+
+
+            if(localStorage.getItem("outh2_token")){
+                outh2_token.value = localStorage.getItem("outh2_token");
+            }
+
+            if (document.location.hash && document.location.hash != '') {
                 const parsedHash = new URLSearchParams(window.location.hash.replace("#/", ""));
                 if(parsedHash.get('access_token')){
-                    const access_token = parsedHash.get('access_token');
-                    localStorage.setItem("access_token", access_token)
+                    
+                    
+                    const GetTwitchData = async (resource)=>{
+                        const response = await fetch(
+                        resource,
+                        {
+                            "headers": {
+                            "Client-ID": Config.client_id,
+                            "Authorization": `Bearer ${parsedHash.get('access_token')}`
+                            }
+                        }
+                        );
 
+                        const data = await response.json();
+                        return data;
+                    };
+
+                   GetTwitchData('https://api.twitch.tv/helix/users')
+                        .then(async  resp =>{
+                            const {id, display_name} = await resp.data[0];
+                                data.id = id;
+                                data.userName = display_name;
+                                data.botName = display_name;
+                        localStorage.setItem("data", JSON.stringify(data));
+                        localStorage.setItem("access_token", parsedHash.get('access_token'))
+                    }).catch(err=>console.log(err));
                 }
                 }else if(document.location.search && document.location.searcha !== ''){
                     const parsedHash = new URLSearchParams(window.location.hash.replace("#/", ""));
@@ -62,13 +80,24 @@ export default {
                         const accessToken ={};
                         accessToken.textContent = parsedParams.get('error') + '-' + parsedParams.get('erros_description');
                     }
-                }
+            }
+
+                
+            tokenBtn.addEventListener('click', ()=>{
+                const input = document.querySelector('.form-control');
+                if(outh2_token.value !== ""){
+                    const client_id = Config.client_id;
+                    const redirect = `http://localhost:8080`;
+                    const scope = Config.scope;
+                    localStorage.setItem("outh2_token", outh2_token.value);
+                    tokenBtn.setAttribute("href", `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${redirect.replace('#/', '')}&response_type=token&scope=${scope}`);
+                }else input.classList.add("error");
+            })
         });
 
 
         return{
             outh2_token,
-            setBotName,
             message
         }
     }
@@ -115,15 +144,19 @@ export default {
 
             
                 .toolTip{
-                    position: relative;
+                    position: absolute;
+                    font-size: 1.5rem;
+                    left: 54.5%;
+                    bottom: 47.4%;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     background: #14213d;
                     border-radius: 50%;
-                    width: 25px;
-                    height: 25px; 
+                    width: 40px;
+                    height: 40px; 
                     color: white;
+                    z-index: 2;
                     
                     &:hover .toolTipText{
                         opacity: 1;
@@ -132,6 +165,7 @@ export default {
                     } 
 
                     .toolTipText{
+                        font-size: 1rem;
                         display: none;
                         position: absolute;
                         left: 50%;
@@ -202,6 +236,10 @@ export default {
                         transform: translateY(-10px);
                         transition: 0.2s ease-in-out transform;
                     }
+                }
+
+                .error{
+                     border: 2px solid red !important;
                 }
                 .control-label {
                     display: block;

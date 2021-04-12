@@ -73,6 +73,7 @@ app.on("activate", () => {
 app.on("ready", async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
+    require('vue-devtools').install()
     try {
       await installExtension(VUEJS_DEVTOOLS);
     } catch (e) {
