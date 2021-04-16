@@ -7,7 +7,7 @@
 <script>
 
 // Configuration
-  import {onMounted, ref} from "vue";
+  import {onMounted, ref, computed} from "vue";
   import { useStore} from "vuex";
   import config from "./store/json/config";
   import tmi from "tmi.js";
@@ -27,9 +27,13 @@ export default {
   setup()  {
       const checkToken = ref(false);
       const store = useStore();
+     
     onMounted(()=>{ 
-        setTimeout(() => {
+        const commands = computed(()=>{
+          return store.state.command
+        })
           if(localStorage.getItem("access_token")){
+                  store.commit('SetCommands', JSON.parse(window.electron.loadJSON('/json/commands.json')));
                     const outh2_token = localStorage.getItem("outh2_token");
                     const token = localStorage.getItem("access_token");
 
@@ -63,37 +67,37 @@ export default {
 
                     checkToken.value = true;
 
+                  // Getting the user data from twitchChat
                     client.on("message", (channel, tags, message, self) =>{
                       if(self) return;
-
-
                       GetTwitchData(`https://api.twitch.tv/helix/users?login=${tags.username}`)
                         .then(resp=>{
                           const {profile_image_url} = resp.data[0];
-                          store.dispatch('add', {username: tags.username, message, profile_image_url});
+                          console.log(tags.color)
+                          store.dispatch('add', {username: tags.username, message, profile_image_url, color: tags.color});
                         })
                         .catch(err=>console.log(err));
                     })
 
-                    if(localStorage.getItem("chat_commands")){
-                      let commands = []
-                      commands = JSON.parse(localStorage.getItem("chat_commands"));
-                      
-                      client.on("message", (channel, tags, message, self)=>{
-                        if(self) return;
 
-
-                        commands.forEach(command =>{
-                          if(message.toLowerCase() == command.command){
-                            client.say(channel, command.message);
-                          }
+                    // Commands Event
+                      if(window.electron.loadJSON('/json/commands.json')){
+                        client.on("message", (channel, tags, message, self)=>{
+                          if(self) return;
+                          commands.value.forEach(command =>{
+                            const args = message.split(' ' + ',');
+                            if(command.command === args[0]){
+                              console.log(command.response.includes('{user}') )
+                              if(command.response.includes('{user}')){
+                                client.say(channel, command.response.replace('{user}', `@${tags.username}`))
+                              }else{
+                                client.say(channel, `[BOT]: ${command.response}`);
+                              }
+                            }
+                          })
                         })
-                      })
-                    }
-              }
-      }, 1000);
-
-      
+                      }
+          }
     });
 
     return{

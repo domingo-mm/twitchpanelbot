@@ -1,46 +1,76 @@
 <template>
-    <div class="modal-add">
+    <div class="modal-add" v-if="modal">
         <form action="">
-            <select name="char" id="char">
-                <option value="!">!</option>
-                <option value="@">@</option>
-                <option value="#">#</option>
-                <option value="$">$</option>
-            </select>
-
-            <input type="text" name="command" placeholder="Command">
-            <input type="text" name="message" placeholder="Message">
+            <header>
+                <h4>Add Custom Command.</h4>
+            </header>
+            <label for=""></label>
+            <input type="text" :name="command" placeholder="!hello">
+            <textarea type="text" :name="message" placeholder="Insert your chat response here."></textarea>
             
-            <select name="type" id="type">
+            <select :name="type" id="type">
                 <option value="message">Message</option>
                 <option value="command">Command</option>
             </select>
-
-            <input type="submit" value="DODAJ" id="add">
+            <footer>
+                <input type="submit" value="ADD" id="add">
+                <button value="DODAJ" >CANCEL</button>
+            </footer>
         </form>
     </div>
 </template>
 
 <script>
+import { ref} from "vue";
+
 export default {
     name: "ModalAdd",
     setup() {
-        
+        const modal = ref(false);
+        // const char = ref('');
+        // const command = ref('');
+        // const message = ref('');
+        // const type = ref('');
+
+        function addCommand(){
+
+        }
+
+        // onMounted(()=>{
+        //     console.log(char.value, command.value, message.value, type.value);
+        // });
+
+
+        return{
+            // char,
+            // command,
+            // message,
+            // type,
+            modal,
+            addCommand
+        }
     },
 }
 </script>
 
 <style scoped lang="scss">
     .modal-add{
+        position: absolute;
+        width: 94.9%;
+        height: 96.6vh;
+        background-color: #00000067;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+
         form{
-            position: absolute;
-            top: 10%;
-            left: 16%;
             width: 40%;
-            height: 5%;
+            height: 40%;
             padding: 20px;
             background-color: white;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: space-evenly;
 
@@ -77,7 +107,7 @@ export default {
             }
             
 
-            input{
+            input, button{
                 height: 40px;
                 width: 100px;
             }

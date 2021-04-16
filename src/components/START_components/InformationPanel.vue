@@ -26,13 +26,11 @@
           <transition-group name="fade">
             <div class="chat" v-for="chat in dataChat" :key="chat">
               <article>
-                <header>
-                  <div class="username">
-                    <img :src="chat.profile_image_url" alt="">
-                    <span>{{chat.username}}</span>
-                  </div>
-                </header>
-                <p class="message">{{chat.message}}</p>
+                <div class="username">
+                  <img :src="chat.profile_image_url" alt="">
+                  <span :style="{color: chat.color}">{{chat.username}}:</span>
+                  <p class="message">{{chat.message}}</p>
+                </div>
               </article>
             </div>
           </transition-group>
@@ -221,7 +219,6 @@ export default {
       height: 30px;
     }
 
-
   .panel-top{
     display: flex;
     position: relative;
@@ -258,7 +255,6 @@ export default {
     }
   }
 
-
   .panel-center{
     width: 100%;
     display: flex;
@@ -290,8 +286,8 @@ export default {
       .chat{
         display: flex;
         justify-content: space-evenly;
-        width: 80%;
-        height: 20vh;
+        width: 90%;
+        height: auto;
         background-color: #08141e;
         font-weight: bold;
         color: white;
@@ -303,35 +299,32 @@ export default {
           min-height: 0;
           width: 100%;
           transition: all ease-in-out .2s;
-          header{
-            img{
-              height: 50px;
-              width: 50px;
-              border-radius: 50%;
-            }
-            padding: 0;
-            margin: 0;
-            .username{
-              display: flex;
-              align-items: center;
-              padding-left: 20px;
-              margin-top: 10px;
-              margin-bottom: 10px;
-              font-size: 20px;
+          img{
+            height: 35px;
+            width: 35px;
+            border-radius: 50%;
+          }
+          .username{
+            display: flex;
+          align-items: center;
 
-              span{
-                margin-left: 10px;
-              }
+            padding-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 20px;
+
+            span{
+              display: flex;
+              margin-left: 10px;
             }
           }
 
           .message{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000000b2;
-            height: 13vh;
-            white-space: normal;
+            width: 400px;
+            font-size: 15px;
+            word-wrap: break-word;
+            text-align: justify;
+            margin-left: 10px;
           }
         }
       }
