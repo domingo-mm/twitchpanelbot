@@ -1,0 +1,44 @@
+[
+  {
+    "command": "!hello",
+    "response": "Hello World - bot",
+    "permission": "regulars",
+    "reply_in": "chat"
+  },
+  {
+    "command": "!test",
+    "response": "Testing Command",
+    "permission": "follows",
+    "reply_in": "chat"
+  },
+  {
+    "command": "!hello2",
+    "response": "Hello World - bot",
+    "permission": "regulars",
+    "reply_in": "chat"
+  },
+  {
+    "command": "!ig",
+    "response": "Test",
+    "permission": "regulars",
+    "reply_in": "chat"
+  },
+  {
+    "command": "!test2",
+    "response": "Testing Command",
+    "permission": "follows",
+    "reply_in": "chat"
+  },
+  {
+    "command": "!hi",
+    "response": "TEST",
+    "permission": "subscribers",
+    "reply_in": "whisper"
+  },
+  {
+    "command": "!testing",
+    "response": "Hello testing",
+    "permission": "regulars",
+    "reply_in": "chat"
+  }
+]

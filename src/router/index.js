@@ -29,29 +29,6 @@ const routes = [
     path: "/timer",
     name: "Timer",
     component: Timer
-  },
-  {
-    path: "/module",
-    name: "Module",
-    component: () =>
-      import("@/views/Module/Module.vue"),
-  },
-  {
-    path: "/fun",
-    name: "Fun",
-    component: () =>
-      import("@/views/Fun/Fun.vue"),
-  },
-  {
-    path: "/trigger",
-    name: "Trigger",
-    component: () =>
-      import("@/views/Trigger/Trigger.vue"),
-  },
-  {
-    path: "/twitch",
-    name: "Twitch",
-    
   }
 ];
 

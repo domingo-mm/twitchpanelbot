@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    host: 'localhost'
+    },
     pluginOptions: {
       electronBuilder: {
         mainProcessFile: 'src/background.js',

@@ -1,4 +1,4 @@
 {
     "client_id": "7uimjt9gmw8bpibezbs3xp0xhh3w67",
-    "scope": "channel:read:subscriptions+channel:read:redemptions"
+    "scope": "channel:read:subscriptions+channel:read:redemptions+user:read:subscriptions"
 }

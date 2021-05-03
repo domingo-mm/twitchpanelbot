@@ -3,25 +3,17 @@
         <div class="modal-add" v-if="addModal || updateModal">
             <form action="">
                 <header>
-                    <h4>Add Custom Command</h4>
+                    <h4>Add Timer</h4>
                 </header>
-                <label for=""></label>
-                Command: <input type="text" v-model="command" placeholder="!hello" :disabled="updateModal">
-                Response: <textarea type="text" v-model="message" placeholder="Insert your chat response here."></textarea>
-                Permission:
-                <select v-model="permission" id="type">
-                    <option value="regulars">Regulars</option>
-                    <option value="follows">Follows</option>
-                    <option value="subscribers">Subscribers</option>
-                </select>
-                Reply in:
-                <select v-model="reply_in" id="type">
-                    <option value="chat">Chat</option>
-                    <option value="whisper">Whisper</option>
-                </select>
+                <label for="title">Title: </label>
+                <input type="text" name="title" v-model="title" placeholder="title" :disabled="updateModal">
+                <label for="response">Response:</label>
+                 <textarea type="text" name="response" v-model="message" placeholder="Insert your chat response here."></textarea>
+                <label for="delay">Delay_in: </label>
+                <input type="text" name="delay" v-model="delay_in" placeholder="In minutes" >
                 <footer>
-                    <button  value="ADD" id="add" @click="addCommand" v-if="addModal">ADD</button>
-                    <button  value="EDIT" id="add" @click="editCommand" v-else>EDIT</button>
+                    <button  value="ADD" id="add" @click="addTimer" v-if="addModal">ADD</button>
+                    <button  value="EDIT" id="add" @click="editTimer" v-else>EDIT</button>
                     <button  @click="addModal = false, updateModal = false">CANCEL</button>
                 </footer>
             </form>
@@ -33,35 +25,35 @@
                 <svg viewBox="0 0 512 512">
                     <use href="../../assets/icons/twitch-brands.svg#twitch"></use>  
                 </svg>
-                COMMANDS
+                TIMERS
             </h3> 
-            <div class="btn add-btn" @click="addModal = true, resetValues, command = '', message ='', permission = '', reply_in = ''">Add Command</div>
+            <div class="btn add-btn" @click="addModal = true, resetValues, title = '', message ='', delay_in = ''">Add Timer</div>
         </header>
         <div class="commands">
            <div class="headers">
-                   <span>Command</span>
-                   <span>Response</span>
-                   <span>Operations</span>
+                   <span>title</span>
+                   <span>response</span>
+                   <span>operations</span>
             </div>
             <div class="command-panel">
-               <div class="command" v-for="command in commandsJSON" :key="command">
+               <div class="command" v-for="timer in timers" :key="timer">
                    <span>
-                       {{command.command}}
+                       {{timer.title}}
                     </span>
                    <span>
-                       {{command.response}}
+                       {{timer.response}}
                     </span>
-                   <div>
-                       <button class="btn" @click="getCommandData(command.command)">
+                   <div class="btns">
+                       <button class="btn" @click="getTimerData(timer.title)">
                            <svg viewBox="0 0 512 512">
                                 <use href="../../assets/icons/pen-solid.svg#fa-pen"></use>  
                             </svg>
-                       </button>
-                       <button class="btn" @click="deleteCommand(command.command)">
-                           <svg viewBox="0 0 512 512">
+                        </button>
+                       <button class="btn" @click="deleteTimer(timer.title)">
+                            <svg viewBox="0 0 512 512">
                                 <use href="../../assets/icons/trash-solid.svg#fa-trash"></use>  
                             </svg>
-                       </button>
+                        </button>
                    </div>
                </div>
            </div>
@@ -70,130 +62,118 @@
 </template>
 
 <script>
-import {computed, ref } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import path from "path";
 
 export default {
-    name: "ListCommands",
+    name: "ListTimmers",
     setup() {
         // data
             const store = useStore();
-            const command = ref('');
+            const title = ref('');
             const message = ref('');
-            const permission = ref('');
-            const reply_in = ref('');
-            const commandsJSON = computed(()=> {
-                return store.state.command;
+            const delay_in = ref(0);
+            const timers = computed(()=> {
+                return store.state.timer;
             });
+
             const addModal = ref(false);
             const updateModal = ref(false);
 
-            console.log(commandsJSON)
-
             
-            function resetValues(){
-                command.value = ''; message.value = ''; permission.value = ''; reply_in.value = '';
-            }
 
-            function getCommandData(commands){
+            function getTimerData(timer){
                 updateModal.value = true;
-                commandsJSON.value.forEach(res=>{
-                    if(res.command === commands){
-                        command.value = res.command;
+                timers.value.forEach(res=>{
+                    if(res.title === timer){
+                        title.value = res.title;
                         message.value = res.response;
-                        permission.value = res.permission;
-                        reply_in.value = res.reply_in;
+                        delay_in.value = res.delay_in;
                         return;
                     }
                 });
             }
-            function addCommand(){
 
-                
 
-                if(command.value === '') return console.log("The command field is required.");
+            function addTimer(){
+
+                if(title.value === '') return console.log("The title field is required.");
                 else{
-                    for(const [key, item ] of Object.entries(commandsJSON.value)){
-                        if(item.command === command.value){
+                    for(const [key, timer] of Object.entries(timers.value)){
+                        if(timer.title === timers.value){
                             console.log(key)
-                            return console.log('The command is alredy taken')
+                            return console.log('The Timer is alredy taken')
                         }
                     }
                 }
-                if(!command.value.includes("!") || command.value.includes("!") && command.value.length === 1) return console.log("You need to add the char \"!\" and add some letters after.")
                 if (message.value === '') return console.log('The message field is required.');
-                if (permission.value === '') return console.log('Select a permission.');
-                if (reply_in.value === '') return console.log('Select a reply_in.');
+                if (delay_in.value === '') return console.log('The delay field is required.');
 
                 const items = {
-                    command: command.value,
+                    title: title.value,
                     response: message.value,
-                    permission: permission.value,
-                    reply_in: reply_in.value
+                    delay_in: delay_in.value
                 }
-                store.dispatch('addCommand', items)
-                window.electron.writeJSON(path.join('/json/commands.json'), items)
+                store.dispatch('addTimer', items)
+                window.electron.writeJSON(path.join('/json/timers.json'), items)
                 addModal.value = false;
-
+                this.$router.reload();
             }
 
-            function editCommand(){
+
+            function editTimer(){
                 const items = {
-                    command: command.value,
+                    title: title.value,
                     response: message.value,
-                    permission: permission.value,
-                    reply_in: reply_in.value
+                    delay_in: delay_in.value,
                 };
 
-                for(const [key, item] of Object.entries(commandsJSON.value)){
-                    if(item.command === items.command){
-                        console.log(key)
-                        item.command = items.command;
-                        item.response = items.response;
-                        item.permission = items.permission;
-                        item.reply_in = items.reply_in;
+                timers.value.forEach(timer =>{
+                     if(timer.title === items.title){
+                        timer.title = items.title;
+                        timer.response = items.response;
+                        timer.delay_in = items.delay_in;
                     }
-                }
+                })
                 updateModal.value = false;
-                window.electron.editCommandJSON(path.join('/json/commands.json'), items)
+                window.electron.editTimerJSON(path.join('/json/timers.json'), items);
+                this.$router.reload();
             }
 
-            function deleteCommand(command){
-                for(const [key, item] of Object.entries(commandsJSON.value)){
-                    if(item.command === command){
-                       commandsJSON.value.splice(key, 1)
+            function deleteTimer(timer){
+                for(const [key, item] of Object.entries(timers.value)){
+                    if(item.title === timer){
+                       timers.value.splice(key, 1)
                     }
                 }
-                window.electron.deleteCommandJSON('/json/commands.json',command);
+                window.electron.deleteTimerJSON('/json/timers.json', timer);
+                this.$router.reload();
             }
 
             
 
         return{
             // data
-                commandsJSON,
+                timers,
                 addModal,
                 updateModal,
-                command,
+                title,
                 message,
-                permission,
-                reply_in,
+                delay_in,
             // functions
-                addCommand, 
-                getCommandData,
-                editCommand,
-                resetValues,
-                deleteCommand
+                addTimer, 
+                getTimerData,
+                editTimer,
+                deleteTimer
         }
-    }
+    },
 }
-
 </script>
 
 <style scoped lang="scss">
-     .panel-commands{
-         position: absolute;
+    .panel-commands{
+        position: absolute;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -201,7 +181,21 @@ export default {
         width: 90%;
         height: 85vh;
 
-        header{
+        svg{
+            height: 20px;
+            width: 20px;
+        }
+
+        .btn{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: white;
+        }
+
+            header{
                 display: flex;
                 justify-content: space-around;
                 width: 100%;
@@ -235,55 +229,14 @@ export default {
                 }
             }
 
-        svg{
-            height: 20px;
-            width: 20px;
-        }
-
-        .btn{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            background-color: white;
-        }
-
         
         .commands{
             background-color: white;
             border: 10px solid #1E2E39;
             width: 90%;
             height: 90%;
-            
             border-radius: 20px;
 
-
-            header{
-                display: flex;
-                justify-content: space-around;
-                margin-top: 20px;
-
-                h3{
-                    font-size: 25px;
-                    color: white;
-                }
-
-                .add-btn{
-                    width: 100px;
-                    height: 30px;
-                    font-size: 15px;
-                    transition: all ease-in-out .2s;
-                    box-shadow: 0px 0px 4px 2px #00000098;
-                }
-
-                .add-btn:hover{
-                    cursor: pointer;
-                    background-color: #64b082;
-                    color:white;
-                    transition: all ease-in-out .2s;
-                }
-            }
 
             .headers{
                 display: grid;
@@ -302,7 +255,6 @@ export default {
             }
 
             .command-panel{
-               
                 display: flex;
                 align-items: center;
                 flex-direction: column;
@@ -327,13 +279,13 @@ export default {
 
                 .command{
                     display: grid;
-                    grid-template-columns:  auto 450px 300px;
+                    grid-template-columns:  auto 500px 300px;
                     justify-items: center;
                     align-items: center;
                     font-weight: bold;
                     width: 100%;
                     height: 5rem;
-                    margin-top: 5px;
+                    margin: 0 auto;
                     text-align: justify;
                     white-space: normal;
 
@@ -343,9 +295,9 @@ export default {
                         width: 100%;
 
                         .btn{
-                            color: white;
                             border: none;
                             border-radius: 10px;
+                            color: white;
                             width: 46px;
                             height: 41px;
                             transition: all ease-in-out .2s;
@@ -353,6 +305,7 @@ export default {
                             &:hover{
                                 cursor: pointer;
                             }
+
 
                             &:nth-child(1){
                             background-color: #007CC7;
@@ -368,16 +321,13 @@ export default {
                             }
                         }
                     }
-
                 }
             }
         }
-
-        
     }
 
      .modal-add{
-             position: absolute;
+            position: absolute;
             top: 2.2rem;
             width: 92.5%;
             height: 95.9vh;
@@ -398,7 +348,6 @@ export default {
                 align-items: center;
                 text-align: justify;
                 border: 10px solid #585858;
-
                 header{
                     font-size: 2rem;
                 }
@@ -435,6 +384,7 @@ export default {
                     &[multiple] {
                         height: 6rem;
                     }
+
                     option{
                         outline: none;
                         background-color:white;
@@ -446,7 +396,6 @@ export default {
                     }
                 }
                 
-
                 input[type="text"]{
                     width: 350px;
                 }
@@ -462,6 +411,7 @@ export default {
                     display: flex;
                     justify-content: space-evenly;
                 }
+
             }
         }
 </style>

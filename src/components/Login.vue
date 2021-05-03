@@ -1,9 +1,13 @@
 <template>
     <div class="login">
         <div class="modal-login">   
+        <div class="bg"></div>
             <form action="">
                 <h1>
-                    TWITCH BOT
+                    <svg viewBox="0 0 512 512">
+                        <use href="../assets/icons/twitch-brands.svg#twitch"></use>  
+                    </svg>
+                    TWITCH BOT PANEL
                 </h1>
                 <!-- <div class="textInput">
                     <input type="text" class="form-control" placeholder="AUTH2_TOKEN" />
@@ -106,7 +110,6 @@ export default {
 
 <style scoped lang="scss">
     .login{
-        background-color: #5f0f40;
         width: 100%;
         height: 100%;
     }
@@ -118,15 +121,31 @@ export default {
         justify-content: center;
         align-items: center;
 
+        .bg {
+            width: 100%;
+            height: 100%;
+            background-color: #5f0f40;
+            clip-path: polygon(0% 0%, 0% 5%, 100% 100%, 100% 0%);
+        }
+
         form{
             display: flex;
+            position: absolute;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: white;
             border-radius: 20px;
-            width: 600px;
-            height: 700px;
+            width: 500px;
+            height: 600px;
+            border: 10px solid #1E2E39;
+
+            h1{
+                svg{
+                    width: 30px;
+                    height: 30px;
+                }
+            }
 
             label{
                 display: flex;
@@ -146,8 +165,8 @@ export default {
                 .toolTip{
                     position: absolute;
                     font-size: 1.5rem;
-                    left: 54.5%;
-                    bottom: 47.4%;
+                    left: 65%;
+                    bottom: 50%;
                     display: flex;
                     justify-content: center;
                     align-items: center;

@@ -39,11 +39,12 @@ export default {
 
 <style scoped lang="scss">
     #nav_win{
+    position: absolute;
     -webkit-app-region: drag;
     width: 100vw;
     z-index: 1;
     display: flex;
-    background: #414141;
+    background: #1E2E39;
 
     div{
       display: flex;

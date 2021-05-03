@@ -1,27 +1,43 @@
 <template>
   <div class="panel-information">
     <div class="panel-top">
-      <h1>CHANNEL INFORMATION</h1>
       <div>
-        <h3>TWITCH_USERNAME</h3>
+        <h3>
+          TWITCH_USERNAME / BOT_NAME
+          <svg viewBox="0 0 512 512" style="color: #007CC7;">
+              <use href="../../assets/icons/user-solid.svg#user-solid"></use>  
+          </svg>
+        </h3>
         <h4>{{userName}}</h4>
       </div>
       <div>
-        <h3>BOT_NAME</h3>  
-        <h4 v-if="checkBotName">{{botName}}</h4>
-        <h4 v-else>{{userName}}</h4>
-      </div>
-      <div>
-        <h3>Follows</h3>
+        <h3>
+          Follows
+          <svg viewBox="0 0 512 512" style="color: #9B38AB;">
+              <use href="../../assets/icons/star-solid.svg#fa-star"></use>  
+          </svg>
+        </h3>
         <h4>{{follows}}</h4>
       </div>
       <div>
-        <h3>Subscriptions</h3>
+        <h3>
+          Subscriptions
+          <svg viewBox="0 0 512 512" style="color: #FF0000;">
+              <use href="../../assets/icons/heart-solid.svg#fa-heart"></use>  
+          </svg>
+        </h3>
         <h4>{{subscriptions}}</h4>
       </div>
     </div>
     <div class="panel-center">
-        <h1><div>CHAT</div></h1>
+        <h1>
+          <div>
+            <svg viewBox="0 0 512 512">
+                <use href="../../assets/icons/twitch-brands.svg#twitch"></use>  
+            </svg>
+            CHAT
+          </div>
+        </h1>
         <div class="content-r">
           <transition-group name="fade">
             <div class="chat" v-for="chat in dataChat" :key="chat">
@@ -35,38 +51,6 @@
             </div>
           </transition-group>
         </div>
-      <div class="panel-bottom">
-        <span>
-          <svg viewBox="0 0 512 512">
-                <use href="../../assets/icons/terminal-solid.svg#fa-terminal"></use>  
-          </svg><br>
-          COMMANDS [{{commands}}]
-        </span> 
-        <span>
-          <svg viewBox="0 0 512 512">
-                <use href="../../assets/icons/clock-solid.svg#fa-clock"></use>  
-          </svg> <br />
-          TIMMERS [{{timmers}}]
-        </span> 
-        <span>
-          <svg viewBox="0 0 512 512">
-                <use href="../../assets/icons/modx-brands.svg#fa-modx"></use>  
-          </svg> <br />
-          MODULES [{{modules}}]
-        </span> 
-        <span>
-          <svg viewBox="0 0 512 512">
-                <use href="../../assets/icons/star-solid.svg#fa-star"></use>  
-          </svg> <br />
-          FUNS [{{funs}}]
-        </span> 
-        <span>
-          <svg viewBox="0 0 512 512">
-                <use href="../../assets/icons/cat-solid.svg#fa-cat"></use>  
-          </svg> <br />
-          TRIGGERS [{{triggers}}]
-        </span>
-      </div>
     </div>
   </div>
 </template>
@@ -157,28 +141,26 @@ export default {
 
               // Follows
                 GetTwitchData(`https://api.twitch.tv/helix/users/follows?to_id=${id}`)
-                .then(resp =>{
-                  const {total} = resp;
-                  follows.value = total;
-                }).catch(err=>{
-                  console.log(err);
-                });
+                  .then(resp =>{
+                    const {total} = resp;
+                    follows.value = total;
+                  }).catch(err=>{
+                    console.log(err);
+                  });
 
 
               // Subscriptions
                 GetTwitchData(`https://api.twitch.tv/helix/subscriptions?broadcaster_id=${id}`)
-                .then(resp =>{
-                  const {data} = resp;
-                  subscriptions.value = data.length - 1;
-                }).catch(err=>{
-                  console.log(err);
-                });
-
+                  .then(resp =>{
+                    const {data} = resp;
+                    subscriptions.value = data.length - 1;
+                  }).catch(err=>{
+                    console.log(err);
+                  });
 
             }).catch(err=>{
               console.log(err);
             });
-          
     });
 
 
@@ -211,7 +193,6 @@ export default {
     width: 90%;
     height: 85vh;
     border-radius: 20px;
-    background-color: #997577;
   }
 
   svg {
@@ -222,34 +203,28 @@ export default {
   .panel-top{
     display: flex;
     position: relative;
+    top: 40%;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    right: 0;
+    justify-content: space-around;
+    width: 90%;
+    height: 30%;
+    left: 5%;
     padding: 0; 
-    background-color: #08141e;
 
     div{
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      border: 1px solid white;
-      margin-top: 20px;
-      width: 40%;
-
-      h3{
-        border-radius: 5px;
-        padding: 10px;
-        background-color: white;
-        width:240px;
+      width: 100%;
+      h3, h4{
+        margin: 0;
+        padding: 0;
       }
-
+      h3{
+        text-align: left;
+        font-size: 25px;
+      }
       h4{
-        color: white;
-        font-size: 17px;
+        text-align: left;
+        font-size: 20px;
       }
 
     }
@@ -266,15 +241,31 @@ export default {
     h1{
       margin: 0;
       padding: 0;
+      color: white;
+        svg{
+          height: 2rem;
+          width: 2rem;
+          position: relative;
+          top: 1rem;
+          left: -0.5rem;
+        }
+      div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 4rem;
+      }
     }
 
     .content-r{
       display: flex;
-      border-radius: 30px;
-      flex-direction: column;
       align-items: center;
-      width: 70%;
-      height: 70%;
+      flex-direction: column;
+
+      border: 10px solid #1E2E39;
+      border-radius: 30px;
+      width: 473px;
+      height: 742px;
       background-color: white;
       overflow: auto;
 
@@ -320,7 +311,7 @@ export default {
           }
 
           .message{
-            width: 400px;
+            width: 160px;
             font-size: 15px;
             word-wrap: break-word;
             text-align: justify;
@@ -329,19 +320,6 @@ export default {
         }
       }
     }
-
-    .panel-bottom{
-        width: 100%;
-        color: white;
-        display: flex;
-        justify-content: space-evenly;
-
-        span{
-          align-items: center;
-          font-weight: bold;
-          text-shadow: 1px 1px #2e011da4;
-        }
-      }
   }
 
 

@@ -1,47 +1,27 @@
 <template>
     <div class="child-app">
         <div id="nav">
-            <router-link to="/" class="btn-start">
+        <div class="btns">
+          <router-link to="/" class="btn-start">
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/home-solid.svg#fa-home"></use>  
             </svg> <br />
-            START
-            </router-link>
-        <router-link to="/command" class="btn-command" >
-            <svg viewBox="0 0 512 512">
-                <use href="../assets/icons/terminal-solid.svg#fa-terminal"></use>  
-            </svg> <br />
-            COMMANDS
-        </router-link>
-        <router-link to="/timer" class="btn-timer" >
-            <svg viewBox="0 0 512 512">
-                <use href="../assets/icons/clock-solid.svg#fa-clock"></use>  
-            </svg> <br />
-            TIMERS
-        </router-link>
-        <router-link to="/module" class="btn-module">
-            <svg viewBox="0 0 512 512">
-                <use href="../assets/icons/modx-brands.svg#fa-modx"></use>  
-            </svg> <br />
-            MODULES
-        </router-link>
-        <router-link to="/fun" class="btn-fun" >
-            <svg viewBox="0 0 512 512">
-                <use href="../assets/icons/star-solid.svg#fa-star"></use>  
-            </svg> <br />
-            FUN
-        </router-link>
-        <router-link to="/trigger" class="btn-trigger" >
-            <svg viewBox="0 0 512 512">
-                <use href="../assets/icons/cat-solid.svg#fa-cat"></use>  
-            </svg> <br />
-            TRIGGER
-        </router-link>
+          </router-link>
+          <router-link to="/command" class="btn-command" >
+              <svg viewBox="0 0 512 512">
+                  <use href="../assets/icons/terminal-solid.svg#fa-terminal"></use>  
+              </svg> <br />
+          </router-link>
+          <router-link to="/timer" class="btn-timer" >
+              <svg viewBox="0 0 512 512">
+                  <use href="../assets/icons/clock-solid.svg#fa-clock"></use>  
+              </svg> <br />
+          </router-link>
+        </div>
         <router-link to="" class="btn-logout">
             <svg viewBox="0 0 512 512">
                 <use href="../assets/icons/sign-out-alt-solid.svg#fa-w-16"></use>  
             </svg> <br />
-            LOG-OUT
         </router-link >
     </div>
         <router-view />
@@ -102,26 +82,39 @@ export default {
   -webkit-app-region: no-drag;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   margin-bottom: 53px;
-  width: 100px;
+  width: 120px;
   height: 100vh;
   position: static;
   z-index: 2;
-  background: #414141;
+  background: #1E2E39;
   
+  .btns{
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
   svg {
       width: 35px;
       height: 35px;
     }
 
-
   a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-weight: bold;
       color: white;
       text-decoration: none;
+      width: 69px;
+      height: 57px;
+      background-color: #204661;
+      border-radius: 9px;
       font-size: 10px;
-      padding-top: 5px;
-      padding-bottom: 5px;
       transition: all ease-in-out .2s;
     }
 
@@ -129,25 +122,26 @@ export default {
 
   .btn-start, .btn-command, .btn-timer, .btn-module, .btn-fun, .btn-trigger{
     &:hover, &.router-link-exact-active{
+      background-color: #03131E;
       font-size: 15px;
     }
   }
 
   .btn-start{
     &:hover, &.router-link-exact-active{
-      background-color: #980000;
+      color: #5DB9F0;
     }
   }
 
   .btn-command{
     &:hover, &.router-link-exact-active{
-      background-color: #830098;  
+      color: #D56DFA;  
     }
   }
 
   .btn-timer{
     &:hover, &.router-link-exact-active{
-      background-color: #000F98;
+      color: #78F075;
     }
   }
 
@@ -170,7 +164,8 @@ export default {
   }
 
   .btn-logout{
-    background-color: #b10000;
+    background-color: none !important;
+    color: #b10000;
     &:hover, &.router-link-exact-active{
       font-size: 15px;
     }

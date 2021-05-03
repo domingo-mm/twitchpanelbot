@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <InformationPanel />
+    <div class="bg"></div>
+    <InformationPanel class="infoPanel"/>
   </div>
 </template>
 
@@ -10,9 +11,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #4e495f;
     width: 100%;
     height: 100vh;
+
+    .bg {
+      width: 100%;
+      height: 100%;
+      background-color: #007cc7;
+      clip-path: polygon(0% 0%, 0% 5%, 100% 100%, 100% 0%);
+    }
+
+    .infoPanel{
+      position: absolute;
+      z-index: 1;
+    }
   }
 </style>
 
@@ -27,3 +39,4 @@ export default {
   },
 };
 </script>
+
