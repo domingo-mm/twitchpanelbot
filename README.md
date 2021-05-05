@@ -7,7 +7,7 @@ Twitch Bot Panel [PL]
     - ten panel służy tylko do developmentu, żeby odkryć jak to działa. Inspiracją do tworzenia takiego panelu, były boty już istniejący takie jak Streamlabs lub Streamelements. Jeżeli chcesz pomóc w ulepszaniu moich doświadczeń, to napisz w komentarzu co mógłbym zmienić, albo co mógłbym naprawić w swoim kodzie. Z góry dziękuję za pomoc.
 
 
-#DEMO VIEW
+# DEMO VIEW
 
 Login Panel:
 ![loginPanel](./imgReadMe/login_panel.png)
